@@ -36,6 +36,7 @@
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
 
   body {
@@ -660,96 +661,7 @@
     .page > .center-fold { display: none; }
   }
 
-  /* ========== EDIT BAR ========== */
-  .edit-bar {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 9999;
-    display: flex;
-    gap: 8px;
-    padding: 10px 12px;
-    background: var(--bg-dark);
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-    font-family: var(--sans);
-  }
 
-  .edit-bar button {
-    font-family: var(--sans);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 9px 14px;
-    background: transparent;
-    color: #E8E3D5;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: all 120ms ease;
-    border-radius: 2px;
-  }
-
-  .edit-bar button:hover {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-  }
-
-  .edit-bar button.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-  }
-
-  .edit-bar .sep {
-    width: 1px;
-    background: #3A332D;
-    margin: 4px 2px;
-  }
-
-  body.editing [contenteditable="true"]:hover {
-    outline: 1px dashed var(--accent);
-    outline-offset: 4px;
-    cursor: text;
-  }
-
-  body.editing [contenteditable="true"]:focus {
-    outline: 2px solid var(--accent);
-    outline-offset: 4px;
-    background: rgba(139,17,17,0.04);
-  }
-
-  .edit-hint {
-    position: fixed;
-    bottom: 88px;
-    right: 24px;
-    z-index: 9998;
-    padding: 10px 14px;
-    background: var(--ink);
-    color: #E8E3D5;
-    font-family: var(--sans);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    max-width: 260px;
-    border-radius: 3px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 200ms ease;
-    pointer-events: none;
-  }
-
-  .edit-hint.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (max-width: 640px) {
-    .edit-bar { bottom: 12px; right: 12px; padding: 6px 8px; }
-    .edit-bar button { padding: 7px 10px; font-size: 10px; }
-    .edit-hint { bottom: 64px; right: 12px; max-width: 220px; }
-  }
 </style>
 </head>
 <body>
@@ -1388,121 +1300,7 @@
   </footer>
 
 </div>
-<!-- ===================== EDIT BAR ===================== -->
-<div class="edit-bar" id="editBar" role="toolbar" aria-label="Barra de edição">
-  <button id="btnEdit" title="Ativar modo de edição">✎ Editar</button>
-  <div class="sep"></div>
-  <button id="btnExport" title="Baixar HTML com suas edições">⬇ Baixar HTML</button>
-  <button id="btnPrint" title="Imprimir ou salvar como PDF">⎙ PDF</button>
-  <div class="sep"></div>
-  <button id="btnHide" title="Ocultar esta barra">✕</button>
-</div>
 
-<div class="edit-hint" id="editHint"></div>
-
-<script>
-  (function() {
-    const body = document.body;
-    const bar = document.getElementById('editBar');
-    const btnEdit = document.getElementById('btnEdit');
-    const btnExport = document.getElementById('btnExport');
-    const btnPrint = document.getElementById('btnPrint');
-    const btnHide = document.getElementById('btnHide');
-    const hint = document.getElementById('editHint');
-
-    // Elementos editáveis: títulos, parágrafos, citações, células de tabela, legendas, bio
-    const selectors = [
-      '.headline', '.deck', '.article-body p', '.section h2', '.section h3',
-      '.pull-quote blockquote', '.pull-quote cite',
-      '.editorial-table caption', '.editorial-table th', '.editorial-table td',
-      '.legal-registry dt', '.legal-registry dd',
-      '.byline-expanded .bio h5', '.byline-expanded .bio .handle', '.byline-expanded .bio p',
-      '.masthead-top span', '.masthead-sub', '.kicker'
-    ];
-
-    function setEditable(state) {
-      selectors.forEach(sel => {
-        document.querySelectorAll(sel).forEach(el => {
-          el.setAttribute('contenteditable', state ? 'true' : 'false');
-          if (state) el.setAttribute('spellcheck', 'true');
-        });
-      });
-    }
-
-    function showHint(text, ms) {
-      hint.textContent = text;
-      hint.classList.add('show');
-      clearTimeout(hint._t);
-      hint._t = setTimeout(() => hint.classList.remove('show'), ms || 2600);
-    }
-
-    // Toggle edição
-    btnEdit.addEventListener('click', () => {
-      const on = !body.classList.contains('editing');
-      body.classList.toggle('editing', on);
-      btnEdit.classList.toggle('active', on);
-      btnEdit.textContent = on ? '✓ Editando' : '✎ Editar';
-      setEditable(on);
-      if (on) showHint('Clique em qualquer texto e digite para editar. Use "Baixar HTML" para salvar.');
-      else showHint('Modo de edição desativado.');
-    });
-
-    // Exportar HTML editado
-    btnExport.addEventListener('click', () => {
-      // Tira o contenteditable antes de salvar
-      const wasEditing = body.classList.contains('editing');
-      if (wasEditing) setEditable(false);
-
-      // Clona o documento pra não incluir a própria edit bar no export
-      const clone = document.documentElement.cloneNode(true);
-      const cloneBar = clone.querySelector('#editBar');
-      const cloneHint = clone.querySelector('#editHint');
-      const cloneScript = clone.querySelector('script');
-      // Mas mantém a edit bar pra re-editar depois se quiser — comentar as 3 linhas abaixo pra isso:
-      // if (cloneBar) cloneBar.remove();
-      // if (cloneHint) cloneHint.remove();
-      // if (cloneScript) cloneScript.remove();
-
-      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
-      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      const ts = new Date().toISOString().slice(0,16).replace(/[:T]/g, '-');
-      a.href = url;
-      a.download = 'code_vs_brazilian_law_' + ts + '.html';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      if (wasEditing) {
-        body.classList.add('editing');
-        setEditable(true);
-      }
-      showHint('Arquivo baixado. Abra pra continuar de onde parou.');
-    });
-
-    // Imprimir / PDF
-    btnPrint.addEventListener('click', () => window.print());
-
-    // Ocultar barra
-    btnHide.addEventListener('click', () => {
-      bar.style.display = 'none';
-      showHint('Barra oculta. Recarregue a página pra trazer de volta.', 3200);
-    });
-
-    // Atalho de teclado: Cmd/Ctrl + E alterna edição
-    document.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'e') {
-        e.preventDefault();
-        btnEdit.click();
-      }
-    });
-
-    // Primeira dica
-    setTimeout(() => showHint('Dica: clique em "Editar" pra modificar qualquer texto. Cmd/Ctrl+E é o atalho.', 4500), 800);
-  })();
-</script>
 
 </body>
 </html>
