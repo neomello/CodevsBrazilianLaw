@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code vs. Brazilian Law — Uma investigação de Node Neø Mello</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAF6EC;
+    --bg-elev: #F1EBDB;
+    --bg-dark: #1A1410;
+    --ink: #1A1410;
+    --ink-muted: #6B6258;
+    --accent: #8B1111;
+    --accent-ink: #5A0909;
+    --rule: #D4C8AE;  
+    --rule-soft: #E3DBC5;
+    --serif-display: 'Playfair Display', Georgia, serif;
+    --serif-body: 'Lora', 'Libre Caslon Text', Georgia, serif;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif-body);
+    font-size: 18px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(139,17,17,0.015) 0%, transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(26,20,16,0.02) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  .page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  /* ========== MASTHEAD ========== */
+  .masthead {
+    border-bottom: 4px double var(--ink);
+    padding: 28px 0 20px;
+    margin-bottom: 8px;
+  }
+
+  .masthead-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 18px;
+  }
+
+  .masthead-top span:nth-child(2) { text-align: center; flex: 1; }
+  .masthead-top span:last-child { text-align: right; }
+
+  .masthead h1.nameplate {
+    font-family: var(--serif-display);
+    font-weight: 900;
+    font-size: clamp(44px, 7vw, 88px);
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+    text-align: center;
+    color: var(--ink);
+  }
+
+  .masthead h1.nameplate .accent {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .masthead-sub {
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: 14px;
+  }
+
+  .masthead-sub::before,
+  .masthead-sub::after {
+    content: "✦";
+    color: var(--accent);
+    margin: 0 14px;
+    font-size: 10px;
+  }
+
+  /* ========== ARTICLE HEAD ========== */
+  .article-head {
+    padding: 60px 0 44px;
+    text-align: center;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .kicker {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 5px 14px;
+    border: 1px solid var(--accent);
+    margin-bottom: 28px;
+  }
+
+  .headline {
+    font-family: var(--serif-display);
+    font-weight: 900;
+    font-size: clamp(36px, 5.5vw, 68px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 22px;
+  }
+
+  .headline em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent-ink);
+  }
+
+  .deck {
+    font-family: var(--serif-body);
+    font-size: clamp(18px, 2vw, 23px);
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--ink-muted);
+    max-width: 780px;
+    margin: 0 auto 36px;
+  }
+
+  .byline {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    display: inline-block;
+    min-width: 360px;
+  }
+
+  .byline .name {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .byline .meta {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--ink-muted);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  /* ========== ARTICLE BODY ========== */
+  .article-body {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 0 40px;
+  }
+
+  .article-body > p,
+  .article-body > .section > p {
+    font-family: var(--serif-body);
+    font-size: 19px;
+    line-height: 1.72;
+    color: var(--ink);
+    margin-bottom: 22px;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .lead {
+    font-size: 20px !important;
+  }
+
+  .lead::first-letter {
+    font-family: var(--serif-display);
+    font-weight: 900;
+    font-size: 5.2em;
+    line-height: 0.82;
+    float: left;
+    padding: 8px 14px 0 0;
+    color: var(--accent);
+  }
+
+  /* ========== SECTION HEADERS ========== */
+  .section {
+    margin-top: 52px;
+    scroll-margin-top: 40px;
+  }
+
+  .section-number {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .section h2 {
+    font-family: var(--serif-display);
+    font-weight: 700;
+    font-size: clamp(26px, 3vw, 38px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section h3 {
+    font-family: var(--serif-display);
+    font-weight: 700;
+    font-style: italic;
+    font-size: 24px;
+    line-height: 1.25;
+    color: var(--ink);
+    margin: 32px 0 14px;
+  }
+
+  .section h3::before {
+    content: "§ ";
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  /* ========== PULL QUOTE ========== */
+  .pull-quote {
+    margin: 40px -40px;
+    padding: 32px 40px;
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg-elev);
+  }
+
+  .pull-quote blockquote {
+    font-family: var(--serif-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(22px, 2.6vw, 30px);
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .pull-quote blockquote::before {
+    content: "\201C";
+    font-size: 1.2em;
+    color: var(--accent);
+    margin-right: 4px;
+    line-height: 0;
+  }
+
+  .pull-quote cite {
+    display: block;
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: 18px;
+  }
+
+  /* ========== EXHIBIT (code) ========== */
+  .exhibit {
+    margin: 32px 0;
+    border: 1px solid var(--rule);
+    background: var(--bg-dark);
+    color: #E8E3D5;
+    position: relative;
+  }
+
+  .exhibit-label {
+    position: absolute;
+    top: -11px;
+    left: 16px;
+    background: var(--bg);
+    padding: 0 10px;
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .exhibit pre {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    line-height: 1.65;
+    padding: 24px 28px;
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  .exhibit .kw { color: #A8D96C; }
+  .exhibit .ty { color: #F5C464; }
+  .exhibit .st { color: #E8B4BC; }
+  .exhibit .cm { color: #7A7268; font-style: italic; }
+
+  /* ========== TABLE ========== */
+  .editorial-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-family: var(--serif-body);
+    font-size: 15.5px;
+  }
+
+  .editorial-table caption {
+    caption-side: top;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-align: left;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 0;
+  }
+
+  .editorial-table thead th {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--ink);
+    text-align: left;
+    vertical-align: bottom;
+  }
+
+  .editorial-table tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .editorial-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--accent-ink);
+    width: 22%;
+  }
+
+  .editorial-table tbody tr:last-child td { border-bottom: 2px solid var(--ink); }
+
+  /* ========== SIDEBAR / LEGAL REGISTRY ========== */
+  .legal-registry {
+    margin: 48px 0;
+    padding: 30px 34px;
+    background: var(--bg-elev);
+    border-left: 4px solid var(--accent);
+    border-top: 1px solid var(--rule);
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .legal-registry h4 {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .legal-registry dl {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 14px 20px;
+    font-family: var(--serif-body);
+    font-size: 15px;
+  }
+
+  .legal-registry dt {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .legal-registry dd {
+    color: var(--ink-muted);
+    line-height: 1.45;
+  }
+
+  /* ========== FIGURES / FLOURISH ========== */
+  .section-divider {
+    text-align: center;
+    margin: 52px 0;
+    color: var(--accent);
+    font-size: 14px;
+    letter-spacing: 0.6em;
+  }
+
+  .section-divider::before { content: "✦  ✦  ✦"; }
+
+  /* ========== ENDMARK ========== */
+  .endmark {
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    color: var(--accent);
+    margin: 60px 0 40px;
+    font-weight: 700;
+  }
+
+  /* ========== FOOTER ========== */
+  .article-footer {
+    margin-top: 70px;
+    padding-top: 38px;
+    border-top: 4px double var(--ink);
+  }
+
+  .byline-expanded {
+    max-width: 780px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 28px;
+    align-items: start;
+    padding: 24px 0;
+  }
+
+  .byline-expanded .avatar {
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+    flex-shrink: 0;
+    background: var(--bg-elev);
+    border: 3px solid var(--ink);
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 5px var(--accent),
+      0 6px 24px rgba(26,20,16,0.2);
+    filter: sepia(0.14) saturate(0.92) contrast(1.03);
+    transition: filter 240ms ease, transform 240ms ease;
+  }
+
+  .byline-expanded .avatar:hover {
+    filter: sepia(0) saturate(1) contrast(1);
+    transform: scale(1.02);
+  }
+
+  .byline-expanded .bio h5 {
+    font-family: var(--serif-display);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  .byline-expanded .bio .handle {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .byline-expanded .bio p {
+    font-family: var(--serif-body);
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+  }
+
+  .colophon {
+    text-align: center;
+    padding: 40px 0 60px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .colophon strong { color: var(--ink); font-weight: 600; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .page { padding: 0 22px; }
+    .pull-quote { margin: 32px -22px; padding: 26px 22px; }
+    .legal-registry { padding: 24px 22px; }
+    .legal-registry dl { grid-template-columns: 1fr; gap: 4px 0; }
+    .legal-registry dt { margin-top: 12px; }
+    .article-body > p, .article-body > .section > p { text-align: left; hyphens: none; }
+    .lead::first-letter { font-size: 4.4em; }
+    .masthead-top { flex-direction: column; gap: 4px; text-align: center; }
+    .masthead-top span { text-align: center !important; }
+    .byline-expanded { grid-template-columns: 1fr; text-align: left; }
+    .editorial-table { font-size: 14px; }
+    .exhibit pre { font-size: 12px; padding: 20px 18px; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .exhibit { background: #f5f5f5; color: #000; border: 1px solid #999; }
+    .pull-quote { background: #f5f5f5; }
+    .edit-bar { display: none !important; }
+  }
+
+  /* ========== PAPER TEXTURE & AGE MARKS ========== */
+  .page { position: relative; }
+  .section { position: relative; }
+
+  /* Grana fina do papel — fixa no viewport, agora mais discreta */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.14 0 0 0 0 0.1 0 0 0 0 0.07 0 0 0 0.28 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.38;
+    mix-blend-mode: multiply;
+  }
+
+  /* Dobradura vertical sutil — linha do meio do jornal */
+  .page > .center-fold {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 3px;
+    margin-left: -1px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(92,68,42,0.05) 8%,
+      rgba(92,68,42,0.08) 50%,
+      rgba(92,68,42,0.05) 92%,
+      transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+  }
+
+  /* Foxing spots — manchinhas amareladas do papel envelhecido */
+  .paper-mark {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: 50%;
+    filter: blur(2.5px);
+    mix-blend-mode: multiply;
+  }
+
+  .paper-mark--1 { top: 240px; left: 2%; width: 34px; height: 22px;
+    background: radial-gradient(ellipse, rgba(120,78,38,0.32), transparent 70%);
+    transform: rotate(18deg); }
+  .paper-mark--2 { top: 680px; right: 3%; width: 42px; height: 28px;
+    background: radial-gradient(ellipse, rgba(138,92,48,0.26), transparent 70%);
+    transform: rotate(-22deg); }
+  .paper-mark--3 { top: 1380px; left: 4%; width: 24px; height: 20px;
+    background: radial-gradient(ellipse, rgba(125,82,40,0.3), transparent 65%);
+    transform: rotate(45deg); }
+  .paper-mark--4 { top: 2180px; right: 2%; width: 38px; height: 26px;
+    background: radial-gradient(ellipse, rgba(115,76,36,0.24), transparent 70%);
+    transform: rotate(8deg); }
+  .paper-mark--5 { top: 2980px; left: 3%; width: 28px; height: 20px;
+    background: radial-gradient(ellipse, rgba(130,85,42,0.28), transparent 68%);
+    transform: rotate(-35deg); }
+  .paper-mark--6 { top: 3780px; right: 4%; width: 46px; height: 30px;
+    background: radial-gradient(ellipse, rgba(110,72,34,0.22), transparent 72%);
+    transform: rotate(12deg); }
+  .paper-mark--7 { top: 4520px; left: 3%; width: 30px; height: 22px;
+    background: radial-gradient(ellipse, rgba(128,84,44,0.25), transparent 70%);
+    transform: rotate(-8deg); }
+  .paper-mark--8 { top: 5240px; right: 3%; width: 40px; height: 26px;
+    background: radial-gradient(ellipse, rgba(118,78,38,0.2), transparent 72%);
+    transform: rotate(20deg); }
+
+  /* Pontinhos de tinta / sujeirinhas finas */
+  .ink-fleck {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    background: rgba(50,36,22,0.35);
+    border-radius: 50%;
+    mix-blend-mode: multiply;
+  }
+  .ink-fleck--a { top: 450px; left: 18%; width: 2px; height: 2px; }
+  .ink-fleck--b { top: 1140px; right: 22%; width: 3px; height: 2px; }
+  .ink-fleck--c { top: 1920px; left: 32%; width: 2px; height: 2px; }
+  .ink-fleck--d { top: 3260px; right: 14%; width: 2.5px; height: 2.5px; }
+  .ink-fleck--e { top: 4080px; left: 26%; width: 2px; height: 3px; }
+
+  /* ========== COFFEE STAIN ========== */
+  .coffee-stain {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+    width: 240px;
+    height: 230px;
+    top: -40px;
+    right: -180px;
+    opacity: 0.88;
+    mix-blend-mode: multiply;
+    transform: rotate(-7deg);
+  }
+
+  .coffee-stain svg { width: 100%; height: 100%; display: block; }
+
+  @media (max-width: 1200px) {
+    .coffee-stain { right: -80px; width: 180px; height: 170px; opacity: 0.72; }
+  }
+
+  @media (max-width: 768px) {
+    .coffee-stain {
+      right: -40px; top: -90px;
+      width: 140px; height: 132px;
+      opacity: 0.55;
+      transform: rotate(-12deg);
+    }
+    .paper-mark { filter: blur(1.8px); opacity: 0.75; }
+    .page > .center-fold { display: none; }
+  }
+
+  /* ========== EDIT BAR ========== */
+  .edit-bar {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--bg-dark);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    font-family: var(--sans);
+  }
+
+  .edit-bar button {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 9px 14px;
+    background: transparent;
+    color: #E8E3D5;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 120ms ease;
+    border-radius: 2px;
+  }
+
+  .edit-bar button:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .edit-bar button.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .edit-bar .sep {
+    width: 1px;
+    background: #3A332D;
+    margin: 4px 2px;
+  }
+
+  body.editing [contenteditable="true"]:hover {
+    outline: 1px dashed var(--accent);
+    outline-offset: 4px;
+    cursor: text;
+  }
+
+  body.editing [contenteditable="true"]:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    background: rgba(139,17,17,0.04);
+  }
+
+  .edit-hint {
+    position: fixed;
+    bottom: 88px;
+    right: 24px;
+    z-index: 9998;
+    padding: 10px 14px;
+    background: var(--ink);
+    color: #E8E3D5;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    max-width: 260px;
+    border-radius: 3px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 200ms ease;
+    pointer-events: none;
+  }
+
+  .edit-hint.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 640px) {
+    .edit-bar { bottom: 12px; right: 12px; padding: 6px 8px; }
+    .edit-bar button { padding: 7px 10px; font-size: 10px; }
+    .edit-hint { bottom: 64px; right: 12px; max-width: 220px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===================== PAPER AGE MARKS ===================== -->
+  <div class="center-fold" aria-hidden="true"></div>
+  <div class="paper-mark paper-mark--1" aria-hidden="true"></div>
+  <div class="paper-mark paper-mark--2" aria-hidden="true"></div>
+  <div class="paper-mark paper-mark--3" aria-hidden="true"></div>
+  <div class="paper-mark paper-mark--4" aria-hidden="true"></div>
+  <div class="paper-mark paper-mark--5" aria-hidden="true"></div>
+  <div class="paper-mark paper-mark--6" aria-hidden="true"></div>
+  <div class="paper-mark paper-mark--7" aria-hidden="true"></div>
+  <div class="paper-mark paper-mark--8" aria-hidden="true"></div>
+  <div class="ink-fleck ink-fleck--a" aria-hidden="true"></div>
+  <div class="ink-fleck ink-fleck--b" aria-hidden="true"></div>
+  <div class="ink-fleck ink-fleck--c" aria-hidden="true"></div>
+  <div class="ink-fleck ink-fleck--d" aria-hidden="true"></div>
+  <div class="ink-fleck ink-fleck--e" aria-hidden="true"></div>
+
+  <!-- ===================== MASTHEAD ===================== -->
+  <header class="masthead">
+    <div class="masthead-top">
+      <span>Volume I · Edição 01</span>
+      <span>Sexta-feira, 17 de abril de 2026</span>
+      <span>São Paulo, Brasil</span>
+    </div>
+    <h1 class="nameplate">The <span class="accent">NEØ`S</span> Investigation</h1>
+    <div class="masthead-sub">Direito · Protocolo · Arquitetura de Ecossistemas</div>
+  </header>
+
+  <!-- ===================== ARTICLE HEAD ===================== -->
+  <div class="article-head">
+    <span class="kicker">Investigação · Direito Digital</span>
+    <h1 class="headline">Smart Contract vs. <em>Brazilian Law</em></h1>
+    <p class="deck">
+      Um smart contract executa uma operação societária em trinta segundos, por cinco
+      dólares. A mesma operação, sob a Lei das S.A., leva sessenta dias e custa mais de
+      dez mil reais. Este é o ponto de partida — e também o ponto de colapso — de uma
+      análise que expõe a colisão arquitetônica entre o Código como Lei e a
+      infraestrutura jurídica legada do Brasil.
+    </p>
+    <div class="byline">
+      Por <span class="name">Node NEØ Mello</span>
+      <span class="meta">Arquiteto de Ecossistemas · neomello.eth · 17.abr.2026 · 18 min de leitura</span>
+    </div>
+  </div>
+
+  <!-- ===================== ARTICLE BODY ===================== -->
+  <article class="article-body">
+
+    <p class="lead">
+      O contrato inteligente analisado nesta investigação é um ERC-20 real. Ele emite
+      tokens, autoriza minters, impõe um limite máximo de suprimento, permite queima
+      voluntária e registra cada evento permanentemente em blockchain pública. Nada
+      disso é ficção: é código em produção, operando em segundos, auditável por qualquer
+      pessoa com um navegador. E, ainda assim, quando confrontado com a legislação
+      brasileira, esse contrato existe num vácuo — tecnicamente sofisticado, juridicamente
+      invisível. Nesta investigação, decompomos cinco dimensões estruturais da comparação
+      entre smart contracts e o direito contratual brasileiro, identificamos quatro
+      avanços técnicos não reconhecidos pela lei e expomos quatro lacunas regulatórias
+      com potencial de litígio iminente.
+    </p>
+
+    <div class="pull-quote">
+      <blockquote>
+        É como operar um carro autônomo em estrada sem sinalização. O carro funciona.
+        A estrada, não.
+      </blockquote>
+      <cite>— Tese central da investigação</cite>
+    </div>
+
+    <!-- ============= SEÇÃO I ============= -->
+    <section class="section">
+      <span class="section-number">I · Estrutura Comparativa</span>
+      <h2>Transparência e imutabilidade</h2>
+
+      <p>
+        Um smart contract, uma vez publicado na blockchain, é permanente. Seu código é
+        aberto, auditável e, salvo funções administrativas explícitas, imutável. A
+        execução dispensa intermediários. O histórico é on-chain, acessível vinte e
+        quatro horas por dia, a custo zero, por qualquer pessoa com acesso à internet.
+      </p>
+
+      <p>
+        O contrato tradicional opera sob lógica oposta. É documento privado, sujeito a
+        interpretações divergentes, dependente de advogados e cartórios para execução,
+        passível de aditamentos que podem reconfigurar a relação original sem deixar
+        traço público. A própria noção de "versão" do contrato — trivial em código
+        versionado — é ambígua no direito civil.
+      </p>
+
+      <p>
+        A legislação brasileira cobre o segundo caso, não o primeiro. Os artigos 104 a
+        114 do Código Civil definem os requisitos do negócio jurídico. A Lei 13.709/2018
+        regula o tratamento de dados pessoais. A Instrução CVM 175/2022 começa a desenhar
+        o perímetro regulatório dos criptoativos. Nenhum desses textos, porém, responde
+        à questão central: um código imutável e determinístico é "contrato" no sentido
+        do artigo 104 do Código Civil?
+      </p>
+    </section>
+
+    <!-- ============= SEÇÃO II ============= -->
+    <section class="section">
+      <span class="section-number">II · Governança</span>
+      <h2>Mil páginas de estatuto, uma linha de código</h2>
+
+      <div class="exhibit">
+        <span class="exhibit-label">Exhibit A · Governance Primitive</span>
+<pre><span class="cm">// Controle de emissores autorizados</span>
+<span class="kw">mapping</span>(<span class="ty">address</span> =&gt; <span class="ty">bool</span>) <span class="kw">public</span> authorizedMinters;
+
+<span class="kw">function</span> <span class="ty">authorizeMinter</span>(<span class="ty">address</span> minter) <span class="kw">external</span> onlyOwner {
+    authorizedMinters[minter] = <span class="st">true</span>;
+    <span class="kw">emit</span> <span class="ty">MinterAuthorized</span>(minter);
+}</pre>
+      </div>
+
+      <p>
+        Essa função equivale, em efeitos práticos, a uma cláusula de governança
+        corporativa. Autoriza quem pode emitir novas unidades do ativo. Registra o evento.
+        É executada pela rede, não por humanos. Não exige reunião de conselho, ata
+        assinada, reconhecimento de firma, registro na Junta Comercial nem publicação em
+        jornal de grande circulação. Ela opera — inteiramente, instantaneamente — fora
+        do sistema jurídico brasileiro.
+      </p>
+
+      <table class="editorial-table">
+        <caption>Quadro I · Governança societária: código versus Lei 6.404/76</caption>
+        <thead>
+          <tr>
+            <th>Aspecto</th>
+            <th>Smart Contract</th>
+            <th>Lei das S.A. (6.404/76)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Controle de emissão</td>
+            <td>Automático, via código</td>
+            <td>Assembleia Geral + registro</td>
+          </tr>
+          <tr>
+            <td>Transparência</td>
+            <td>100% pública, em tempo real</td>
+            <td>Publicação em jornais + CVM</td>
+          </tr>
+          <tr>
+            <td>Velocidade</td>
+            <td>Instantânea (segundos)</td>
+            <td>Dias ou semanas</td>
+          </tr>
+          <tr>
+            <td>Custo operacional</td>
+            <td>US$ 5–50 (gas)</td>
+            <td>R$ 5.000+ (cartórios + publicações)</td>
+          </tr>
+          <tr>
+            <td>Auditoria</td>
+            <td>Permanente e pública</td>
+            <td>Periódica e privada</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Três lacunas jurídicas emergem desta comparação. A CVM, apesar de avançar na
+        regulação de criptoativos, <strong>não reconhece DAOs como estrutura societária</strong>.
+        A Receita Federal não possui instrução normativa específica sobre a tributação
+        de tokens de governança. E o Código Civil não enquadra organizações descentralizadas
+        entre as pessoas jurídicas do artigo 44 — a DAO, no Brasil, simplesmente não
+        existe como sujeito de direito.
+      </p>
+    </section>
+
+    <!-- ============= SEÇÃO III ============= -->
+    <section class="section">
+
+      <!-- Marca de café derramado — o editor pausou aqui pra pensar -->
+      <div class="coffee-stain" aria-hidden="true">
+        <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="coffee-rough" x="-30%" y="-30%" width="160%" height="160%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="3" seed="11"/>
+              <feDisplacementMap in="SourceGraphic" scale="16"/>
+            </filter>
+            <filter id="coffee-splat" x="-30%" y="-30%" width="160%" height="160%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="4"/>
+              <feDisplacementMap in="SourceGraphic" scale="6"/>
+            </filter>
+            <radialGradient id="coffee-grad" cx="48%" cy="52%" r="48%">
+              <stop offset="0%" stop-color="#3d1f08" stop-opacity="0.015"/>
+              <stop offset="55%" stop-color="#3d1f08" stop-opacity="0.06"/>
+              <stop offset="70%" stop-color="#4e2810" stop-opacity="0.22"/>
+              <stop offset="80%" stop-color="#5e361a" stop-opacity="0.38"/>
+              <stop offset="88%" stop-color="#46240c" stop-opacity="0.3"/>
+              <stop offset="96%" stop-color="#3d1f08" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#3d1f08" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="coffee-inner" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#4e2810" stop-opacity="0.12"/>
+              <stop offset="70%" stop-color="#4e2810" stop-opacity="0.04"/>
+              <stop offset="100%" stop-color="#4e2810" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Anel principal do café -->
+          <g filter="url(#coffee-rough)">
+            <circle cx="110" cy="115" r="85" fill="url(#coffee-grad)"/>
+            <circle cx="110" cy="115" r="70" fill="url(#coffee-inner)"/>
+          </g>
+          <!-- Respingos e gotas da borda -->
+          <g filter="url(#coffee-splat)">
+            <ellipse cx="178" cy="162" rx="13" ry="7" fill="#4e2810" opacity="0.22" transform="rotate(35 178 162)"/>
+            <ellipse cx="192" cy="182" rx="5" ry="3" fill="#4e2810" opacity="0.28" transform="rotate(30 192 182)"/>
+            <circle cx="205" cy="192" r="2.4" fill="#3d1f08" opacity="0.32"/>
+            <circle cx="212" cy="199" r="1.6" fill="#3d1f08" opacity="0.38"/>
+            <circle cx="208" cy="205" r="1.2" fill="#3d1f08" opacity="0.3"/>
+            <ellipse cx="38" cy="78" rx="4" ry="2" fill="#4e2810" opacity="0.18" transform="rotate(-25 38 78)"/>
+            <circle cx="28" cy="72" r="1.5" fill="#3d1f08" opacity="0.25"/>
+          </g>
+        </svg>
+      </div>
+
+      <span class="section-number">III · Supply</span>
+      <h2>Política monetária pré-compilada</h2>
+
+      <div class="exhibit">
+        <span class="exhibit-label">Exhibit B · Supply Cap</span>
+<pre><span class="kw">uint256</span> <span class="kw">public constant</span> MAX_SUPPLY = <span class="st">1_000_000_000</span> * <span class="st">1e18</span>;
+
+<span class="kw">require</span>(totalSupply() + amount &lt;= MAX_SUPPLY, <span class="st">"Supply maximo atingido"</span>);</pre>
+      </div>
+
+      <p>
+        Um limite de emissão <em>hard-coded</em> é uma cláusula de capital autorizado —
+        análoga ao que prevê o artigo 168, §3º, da Lei das S.A. A diferença é operacional,
+        não conceitual. A lei brasileira depende de fiscalização, sanção e processo para
+        impor o limite. O código o torna matematicamente impossível de transgredir.
+      </p>
+
+      <p>
+        O paralelo com o sistema monetário tradicional é evidente. Enquanto o Banco
+        Central opera política monetária discricionária — o Conselho Monetário Nacional
+        pode redefinir parâmetros, expandir base, alterar metas — o smart contract opera
+        política monetária <em>imutável</em>. Um token com cap máximo não inflaciona. Uma
+        moeda fiduciária pode inflacionar a qualquer momento, e historicamente inflaciona.
+      </p>
+
+      <div class="pull-quote">
+        <blockquote>
+          O Banco Central tem discrição. O smart contract tem determinismo. A diferença
+          entre os dois é política, não técnica — e a política brasileira ainda não
+          escolheu qual dos dois prefere.
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- ============= SEÇÃO IV ============= -->
+    <section class="section">
+      <span class="section-number">IV · Burn</span>
+      <h2>Redução de capital em trinta segundos</h2>
+
+      <div class="exhibit">
+        <span class="exhibit-label">Exhibit C · Democratic Burn</span>
+<pre><span class="kw">function</span> <span class="ty">burn</span>(<span class="ty">uint256</span> amount) <span class="kw">external</span> {
+    _burn(msg.sender, amount);
+    <span class="kw">emit</span> <span class="ty">TokensBurned</span>(msg.sender, amount);
+}</pre>
+      </div>
+
+      <p>
+        Qualquer detentor pode queimar seus próprios tokens. Uma transação. Trinta
+        segundos. Entre dois e dez dólares de gas. A operação equivalente sob o direito
+        societário brasileiro — redução de capital social, regida pelo artigo 173 da Lei
+        das S.A. — exige assembleia, publicação em jornal, sessenta dias de espera dos
+        credores, reconhecimento de firma, arquivamento na Junta Comercial e,
+        tipicamente, mais de dez mil reais em honorários.
+      </p>
+
+      <p>
+        O avanço é democrático: poder individual substituindo poder coletivo-burocrático.
+        O risco é estrutural: a queima é irreversível, e o direito brasileiro
+        tradicionalmente oferece proteção contra erros — inclusive proteção judicial
+        posterior, via rescisão, anulação ou revisão. No smart contract, não há
+        reversão. A blockchain não tem botão de desfazer.
+      </p>
+
+      <table class="editorial-table">
+        <caption>Quadro II · Queima vs. redução de capital</caption>
+        <thead>
+          <tr>
+            <th>Ação</th>
+            <th>Smart Contract</th>
+            <th>Direito Societário</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Quem pode iniciar</td>
+            <td>Qualquer holder</td>
+            <td>Assembleia + quórum qualificado</td>
+          </tr>
+          <tr>
+            <td>Processo</td>
+            <td>1 transação (~30 s)</td>
+            <td>60 dias de publicação + credores</td>
+          </tr>
+          <tr>
+            <td>Custo</td>
+            <td>US$ 2–10 (gas)</td>
+            <td>R$ 10.000+ (advogados + cartório)</td>
+          </tr>
+          <tr>
+            <td>Reversibilidade</td>
+            <td>Impossível</td>
+            <td>Possível judicialmente</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============= SEÇÃO V ============= -->
+    <section class="section">
+      <span class="section-number">V · Auditoria</span>
+      <h2>Um livro-razão público, sempre aberto</h2>
+
+      <div class="exhibit">
+        <span class="exhibit-label">Exhibit D · Event Log</span>
+<pre><span class="kw">event</span> <span class="ty">MinterAuthorized</span>(<span class="ty">address</span> <span class="kw">indexed</span> minter);
+<span class="kw">event</span> <span class="ty">TokensBurned</span>(<span class="ty">address</span> <span class="kw">indexed</span> from, <span class="ty">uint256</span> amount);</pre>
+      </div>
+
+      <p>
+        Cada transação emite um evento. Esses eventos ficam logados permanentemente no
+        ledger da blockchain e são indexáveis por qualquer exploradora — Etherscan,
+        Blockscout, Dune — gratuitamente. O smart contract produz compliance em tempo
+        real, sem auditor, sem custo e sem relatório trimestral.
+      </p>
+
+      <p>
+        O sistema contábil tradicional opera sob lógica oposta. Livros privados. Auditoria
+        periódica por firmas especializadas. Acesso restrito a acionistas qualificados. A
+        Instrução CVM 480/2009 define os requisitos de divulgação. As Normas Brasileiras
+        de Contabilidade (NBC TG 00) definem o arcabouço. O custo anual de auditoria por
+        uma Big Four no Brasil varia entre cinquenta mil e quinhentos mil reais,
+        dependendo da complexidade da empresa.
+      </p>
+
+      <p>
+        Smart contracts não apenas atendem a esses requisitos — eles os <em>excedem</em>.
+        Em tempo real. Por qualquer auditor do mundo. Sem contrato de prestação de
+        serviços, sem NDA, sem trimestralidade. E, no entanto, no Brasil, uma auditoria
+        realizada por um Big Four é reconhecida em processo; uma consulta pública ao
+        Etherscan, não.
+      </p>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============= AVANÇOS ============= -->
+    <section class="section">
+      <span class="section-number">VI · Avanços não reconhecidos</span>
+      <h2>O que o código faz e a lei ainda não nomeou</h2>
+
+      <h3>Execução determinística</h3>
+      <p>
+        Uma sentença judicial brasileira pode levar anos. Um smart contract executa em
+        segundos. O artigo 5º, inciso XXXV, da Constituição Federal garante a todos o
+        acesso à Justiça — mas o código <em>já é</em>, ele próprio, auto-executável. O
+        que significa "acesso à Justiça" quando a justiça foi pré-compilada?
+      </p>
+
+      <h3>Governança programável</h3>
+      <p>
+        A função <code style="font-family: var(--mono); font-size: 0.9em; background: var(--bg-elev); padding: 2px 6px; border-radius: 2px;">authorizeMinter(address minter) external onlyOwner</code>
+        equivale a uma cláusula de governança corporativa — e opera sem advogados, sem
+        cartórios, sem CVM. Resta a pergunta jurídica que nenhum dispositivo responde:
+        quem é o <em>Owner</em>? Pessoa física? Jurídica? DAO? E se for DAO — que não é
+        pessoa jurídica no Brasil — a responsabilidade recai sobre quem?
+      </p>
+
+      <h3>Supply cap imutável</h3>
+      <p>
+        O <code style="font-family: var(--mono); font-size: 0.9em; background: var(--bg-elev); padding: 2px 6px; border-radius: 2px;">MAX_SUPPLY</code>
+        garante aos detentores que não haverá diluição além do limite. A Lei das S.A.
+        permite aumento de capital via deliberação assemblear, com diluição consequente.
+        Proteção matemática substituindo proteção jurídica: a matemática é mais rápida,
+        e, dentro de seu domínio, incorruptível.
+      </p>
+
+      <h3>Burn democrático</h3>
+      <p>
+        Qualquer indivíduo pode deflagrar deflação sobre os próprios tokens. No direito
+        tradicional, redução de capital é processo coletivo, com quórum, publicação e
+        proteção a credores. Revolução ou risco? Ambos — e é exatamente essa ambiguidade
+        que a legislação brasileira ainda não endereçou.
+      </p>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============= LACUNAS ============= -->
+    <section class="section">
+      <span class="section-number">VII · Lacunas e riscos</span>
+      <h2>Quatro vácuos com potencial de litígio</h2>
+
+      <h3>Personalidade jurídica</h3>
+      <p>
+        DAOs não são reconhecidas como pessoa jurídica no Brasil. Em caso de conflito,
+        o artigo 50 do Código Civil — desconsideração da personalidade jurídica — não
+        se aplica, porque não há personalidade jurídica a desconsiderar. A responsabilidade
+        civil recai, por tabela, sobre os holders individuais, inclusive aqueles que
+        investiram quantias simbólicas em tokens de governança apenas para testar o
+        protocolo.
+      </p>
+
+      <h3>Tributação indefinida</h3>
+      <p>
+        O Imposto de Renda sobre ganho de capital incide sobre a alienação de criptoativos,
+        com alíquotas entre 15% e 22,5%. Mas a Receita Federal ainda não definiu, em
+        instrução normativa específica, se um token de governança é ativo financeiro,
+        moeda virtual, commodity ou categoria nova. <strong>A alíquota existe. A natureza
+        jurídica, não.</strong>
+      </p>
+
+      <h3>Proteção ao consumidor</h3>
+      <p>
+        O Código de Defesa do Consumidor (Lei 8.078/90) é silencioso sobre holders. Um
+        comprador de token é consumidor? Tem direito ao arrependimento previsto no artigo
+        49? A resposta, hoje, é: ninguém sabe — e ninguém saberá, até que o primeiro
+        litígio chegue aos tribunais superiores. Até lá, cada DAO brasileira opera em
+        risco regulatório latente.
+      </p>
+
+      <h3>Lavagem de dinheiro</h3>
+      <p>
+        A Lei 9.613/98 impõe obrigações de identificação de clientes (KYC) e comunicação
+        de operações suspeitas (AML). Exchanges centralizadas cumprem. Protocolos
+        descentralizados, não — são pseudoanônimos por <em>design</em> arquitetônico. O
+        compliance recai sempre na borda do sistema. Nunca no núcleo. É um modelo que
+        funciona enquanto a borda existe; o que acontece quando um protocolo opera
+        inteiramente <em>peer-to-peer</em>, sem borda, é uma pergunta aberta.
+      </p>
+    </section>
+
+    <!-- ============= LEGAL REGISTRY ============= -->
+    <aside class="legal-registry">
+      <h4>Dispositivos legais citados</h4>
+      <dl>
+        <dt>CF/88, Art. 5º, XXXV</dt>
+        <dd>Acesso à Justiça como garantia fundamental</dd>
+
+        <dt>CC/2002, Arts. 104–114</dt>
+        <dd>Requisitos do negócio jurídico</dd>
+
+        <dt>CC/2002, Art. 44</dt>
+        <dd>Rol das pessoas jurídicas de direito privado</dd>
+
+        <dt>CC/2002, Art. 50</dt>
+        <dd>Desconsideração da personalidade jurídica</dd>
+
+        <dt>CC/2002, Art. 53</dt>
+        <dd>Constituição de associações sem fins lucrativos</dd>
+
+        <dt>Lei 6.404/76, Art. 168 §3º</dt>
+        <dd>Limite de capital autorizado</dd>
+
+        <dt>Lei 6.404/76, Art. 173</dt>
+        <dd>Redução de capital social</dd>
+
+        <dt>Lei 8.078/90, Art. 49</dt>
+        <dd>Direito de arrependimento do consumidor</dd>
+
+        <dt>Lei 9.613/98</dt>
+        <dd>Prevenção à lavagem de dinheiro · KYC/AML</dd>
+
+        <dt>Lei 13.709/2018 (LGPD)</dt>
+        <dd>Tratamento de dados pessoais</dd>
+
+        <dt>CVM IN 480/2009</dt>
+        <dd>Registro de companhias abertas</dd>
+
+        <dt>CVM IN 175/2022</dt>
+        <dd>Regulação de criptoativos</dd>
+
+        <dt>PL 3825/2023</dt>
+        <dd>Marco Legal dos Criptoativos (em tramitação)</dd>
+
+        <dt>NBC TG 00</dt>
+        <dd>Normas Brasileiras de Contabilidade</dd>
+      </dl>
+    </aside>
+
+    <!-- ============= QUADRO FINAL ============= -->
+    <section class="section">
+      <span class="section-number">VIII · Quadro consolidado</span>
+      <h2>Três colunas, um descompasso</h2>
+
+      <table class="editorial-table">
+        <caption>Quadro III · Comparativo consolidado</caption>
+        <thead>
+          <tr>
+            <th>Critério</th>
+            <th>Smart Contract</th>
+            <th>Contrato Tradicional</th>
+            <th>Legislação BR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Velocidade</td>
+            <td>Segundos</td>
+            <td>Dias ou meses</td>
+            <td>Anos (judicial)</td>
+          </tr>
+          <tr>
+            <td>Custo</td>
+            <td>US$ 5–50</td>
+            <td>R$ 5.000–50.000</td>
+            <td>R$ 50.000+</td>
+          </tr>
+          <tr>
+            <td>Transparência</td>
+            <td>100% pública</td>
+            <td>Privada</td>
+            <td>Confidencial</td>
+          </tr>
+          <tr>
+            <td>Imutabilidade</td>
+            <td>Código</td>
+            <td>Aditivos possíveis</td>
+            <td>Rescindível judicialmente</td>
+          </tr>
+          <tr>
+            <td>Execução</td>
+            <td>Automática</td>
+            <td>Intermediários</td>
+            <td>Poder Judiciário</td>
+          </tr>
+          <tr>
+            <td>Reconhecimento</td>
+            <td>Não regulado</td>
+            <td>CC/2002</td>
+            <td>CF/88</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============= CONCLUSÃO ============= -->
+    <section class="section">
+      <span class="section-number">IX · Conclusão</span>
+      <h2>A estrada e o carro</h2>
+
+      <p>
+        Este smart contract representa um salto evolutivo sobre os contratos tradicionais.
+        Governança transparente e auditável. Execução determinística sem intermediários.
+        Proteção matemática contra inflação descontrolada. Custos uma ordem de magnitude
+        menores que estruturas societárias formais. Em quase todas as métricas técnicas
+        relevantes, ele supera o que a Lei das S.A., a Instrução CVM 480 e o Código Civil
+        oferecem em conjunto.
+      </p>
+
+      <p>
+        E, simultaneamente, ele opera num vácuo regulatório. DAOs sem personalidade
+        jurídica. Tributação indefinida. Responsabilidade civil incerta. Proteção ao
+        investidor limitada. Compliance AML relegado à borda do sistema. A legislação
+        brasileira não nega a tecnologia — ela simplesmente não a nomeia. E o que não é
+        nomeado permanece, para fins jurídicos, inexistente.
+      </p>
+
+      <p>
+        Para quem opera uma DAO séria no Brasil hoje, a recomendação técnica é clara.
+        Constituir uma <strong>associação sem fins lucrativos</strong> sob o artigo 53 do
+        Código Civil como entidade paralela à DAO. Manter <strong>termos de uso off-chain</strong>
+        vinculando contratualmente os holders. Monitorar a evolução do Projeto de Lei
+        3825/2023, que, mesmo aprovado, ainda deixará intacta a lacuna estrutural mais
+        profunda: a DAO como sujeito de direito, capaz de possuir, contratar e responder
+        em juízo por si mesma.
+      </p>
+
+      <div class="pull-quote">
+        <blockquote>
+          O código está décadas à frente da lei brasileira. Esse descompasso não é
+          anomalia — é o próprio terreno em que a próxima geração de protocolos será
+          construída. E é, simultaneamente, o terreno em que litígios inéditos serão
+          travados.
+        </blockquote>
+      </div>
+
+      <p>
+        A pergunta que resta, e que esta investigação deixa aberta deliberadamente, não
+        é técnica. É institucional. Se o código é auto-executável e o artigo 5º, XXXV,
+        da Constituição garante acesso à Justiça — o que um juiz brasileiro faz, na
+        prática, com uma transação on-chain irreversível que viola o Código de Defesa
+        do Consumidor?
+      </p>
+
+      <p>
+        A resposta não está no código. Não está na lei. Está, por enquanto, num espaço
+        que nenhum dos dois sistemas reivindica — e que ambos precisarão, cedo ou tarde,
+        reivindicar.
+      </p>
+    </section>
+
+    <div class="endmark">— 30 —</div>
+  </article>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="article-footer">
+    <div class="byline-expanded">
+      <img class="avatar"
+           src="data:image/jpeg;base64,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"
+           alt="Retrato de Node Neø Mello"
+           loading="lazy">
+      <div class="bio">
+        <h5>Node NEØ Mello</h5>
+        <span class="handle">neomello.eth</span>
+        <p>
+          Arquiteto de ecossistemas digitais. Opera sob o handle <strong>neomello.eth</strong>
+          e dirige a <strong>FlowOFF Assessoria e Marketing Digital</strong>
+          (CNPJ 43.376.355/0001-92) — consultoria em automação com IA e marketing
+          digital na blockchain. Investigações anteriores disponíveis em NEOFlowOFF.agency.
+        </p>
+      </div>
+    </div>
+
+    <div class="colophon">
+      <strong>The NEØ Investigation</strong> &nbsp;·&nbsp; Vol. I, Ed. 01 &nbsp;·&nbsp;
+      Publicado em São Paulo &nbsp;·&nbsp; 17.abr.2026 &nbsp;·&nbsp;
+      Edição digital standalone &nbsp;·&nbsp; Todos os direitos reservados
+    </div>
+  </footer>
+
+</div>
+<!-- ===================== EDIT BAR ===================== -->
+<div class="edit-bar" id="editBar" role="toolbar" aria-label="Barra de edição">
+  <button id="btnEdit" title="Ativar modo de edição">✎ Editar</button>
+  <div class="sep"></div>
+  <button id="btnExport" title="Baixar HTML com suas edições">⬇ Baixar HTML</button>
+  <button id="btnPrint" title="Imprimir ou salvar como PDF">⎙ PDF</button>
+  <div class="sep"></div>
+  <button id="btnHide" title="Ocultar esta barra">✕</button>
+</div>
+
+<div class="edit-hint" id="editHint"></div>
+
+<script>
+  (function() {
+    const body = document.body;
+    const bar = document.getElementById('editBar');
+    const btnEdit = document.getElementById('btnEdit');
+    const btnExport = document.getElementById('btnExport');
+    const btnPrint = document.getElementById('btnPrint');
+    const btnHide = document.getElementById('btnHide');
+    const hint = document.getElementById('editHint');
+
+    // Elementos editáveis: títulos, parágrafos, citações, células de tabela, legendas, bio
+    const selectors = [
+      '.headline', '.deck', '.article-body p', '.section h2', '.section h3',
+      '.pull-quote blockquote', '.pull-quote cite',
+      '.editorial-table caption', '.editorial-table th', '.editorial-table td',
+      '.legal-registry dt', '.legal-registry dd',
+      '.byline-expanded .bio h5', '.byline-expanded .bio .handle', '.byline-expanded .bio p',
+      '.masthead-top span', '.masthead-sub', '.kicker'
+    ];
+
+    function setEditable(state) {
+      selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+          el.setAttribute('contenteditable', state ? 'true' : 'false');
+          if (state) el.setAttribute('spellcheck', 'true');
+        });
+      });
+    }
+
+    function showHint(text, ms) {
+      hint.textContent = text;
+      hint.classList.add('show');
+      clearTimeout(hint._t);
+      hint._t = setTimeout(() => hint.classList.remove('show'), ms || 2600);
+    }
+
+    // Toggle edição
+    btnEdit.addEventListener('click', () => {
+      const on = !body.classList.contains('editing');
+      body.classList.toggle('editing', on);
+      btnEdit.classList.toggle('active', on);
+      btnEdit.textContent = on ? '✓ Editando' : '✎ Editar';
+      setEditable(on);
+      if (on) showHint('Clique em qualquer texto e digite para editar. Use "Baixar HTML" para salvar.');
+      else showHint('Modo de edição desativado.');
+    });
+
+    // Exportar HTML editado
+    btnExport.addEventListener('click', () => {
+      // Tira o contenteditable antes de salvar
+      const wasEditing = body.classList.contains('editing');
+      if (wasEditing) setEditable(false);
+
+      // Clona o documento pra não incluir a própria edit bar no export
+      const clone = document.documentElement.cloneNode(true);
+      const cloneBar = clone.querySelector('#editBar');
+      const cloneHint = clone.querySelector('#editHint');
+      const cloneScript = clone.querySelector('script');
+      // Mas mantém a edit bar pra re-editar depois se quiser — comentar as 3 linhas abaixo pra isso:
+      // if (cloneBar) cloneBar.remove();
+      // if (cloneHint) cloneHint.remove();
+      // if (cloneScript) cloneScript.remove();
+
+      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const ts = new Date().toISOString().slice(0,16).replace(/[:T]/g, '-');
+      a.href = url;
+      a.download = 'code_vs_brazilian_law_' + ts + '.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      if (wasEditing) {
+        body.classList.add('editing');
+        setEditable(true);
+      }
+      showHint('Arquivo baixado. Abra pra continuar de onde parou.');
+    });
+
+    // Imprimir / PDF
+    btnPrint.addEventListener('click', () => window.print());
+
+    // Ocultar barra
+    btnHide.addEventListener('click', () => {
+      bar.style.display = 'none';
+      showHint('Barra oculta. Recarregue a página pra trazer de volta.', 3200);
+    });
+
+    // Atalho de teclado: Cmd/Ctrl + E alterna edição
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'e') {
+        e.preventDefault();
+        btnEdit.click();
+      }
+    });
+
+    // Primeira dica
+    setTimeout(() => showHint('Dica: clique em "Editar" pra modificar qualquer texto. Cmd/Ctrl+E é o atalho.', 4500), 800);
+  })();
+</script>
+
+</body>
+</html>
